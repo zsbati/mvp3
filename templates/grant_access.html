@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin - Grant Access{% endblock %}
+
+{% block content %}
+  <h2>Grant Access</h2>
+  <form method="POST">
+    <div class = "form-group">
+        <label for = "teacher">Select a Teacher:</label>
+        <select class = "form-control" id="teacher" name="teacher" required>
+            {% for teacher in teachers %}
+             <option value="{{teacher.id}}">{{teacher.username}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class = "form-group">
+      <label for="student">Select a Student:</label>
+      <select class = "form-control" id="student" name="student" required>
+        {% for student in students %}
+          <option value="{{student.id}}">{{student.name}}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Grant Access</button>
+  </form>
+{% endblock %}
