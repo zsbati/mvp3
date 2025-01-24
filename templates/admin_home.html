@@ -1,36 +1,39 @@
 <!-- templates/admin_home.html -->
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<h2>Welcome, {{ current_user.username }}!</h2>
-<h3>Manage Teacher Access</h3>
-<form method="POST">
-    <label for="teacher_id">Teacher:</label>
-    <select id="teacher_id" name="teacher_id">
-        {% for teacher in teachers %}
-        <option value="{{ teacher.id }}">{{ teacher.username }}</option>
+    <h2>Admin Dashboard</h2>
+
+    <h3>Create User</h3>
+    <form action="{{ url_for('create_user') }}" method="post">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <select name="user_type">
+            <option value="admin">Admin</option>
+            <option value="teacher">Teacher</option>
+            <option value="student">Student</option>
+        </select>
+        <button type="submit">Create User</button>
+    </form>
+
+    <h3>Users</h3>
+    <ul>
+        {% for user in users %}
+            <li>
+                {{ user.username }} ({{ user.user_type.value }})
+                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display: inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
         {% endfor %}
-    </select><br>
+    </ul>
 
-    <label for="student_id">Student:</label>
-    <select id="student_id" name="student_id">
-        {% for student in students %}
-        <option value="{{ student.id }}">{{ student.username }}</option>
-        {% endfor %}
-    </select><br>
-
-    <button type="submit" name="action" value="grant">Grant Access</button>
-    <button type="submit" name="action" value="revoke">Revoke Access</button>
-</form>
-
-<h4>Current Access</h4>
-<ul>
-    {% for access in access_list %}
-        {% if access.access_granted %}
-            <li>{{ access.teacher.username }} has access to {{ access.student.username }}</li>
-        {% endif %}
-    {% else %}
-    <li>No access granted yet.</li>
-    {% endfor %}
-</ul>
+    <h3>Grant Teacher Access to Student</h3>
+    <form action="{{ url_for('grant_access') }}" method="post">
+        <input type="text" name="teacher_username" placeholder="Teacher Username" required>
+        <input type="text" name="student_username" placeholder="Student Username" required>
+        <button type="submit">Grant Access</button>
+    </form>
 {% endblock %}

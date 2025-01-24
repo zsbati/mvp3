@@ -3,48 +3,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My App{% endblock %}</title>
-    <!-- Add your CSS links or style tags here -->
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('home') }}">Home</a></li>
-                {% if current_user.is_authenticated %}
-                    {% if current_user.type == 'student' %}
-                        <li><a href="{{ url_for('student_comments') }}">My Comments</a></li>
-                    {% elif current_user.type == 'teacher' %}
-                        <li><a href="{{ url_for('teacher_students') }}">My Students</a></li>
-                    {% elif current_user.type == 'admin' %}
-                        <li><a href="{{ url_for('admin_teacher_access') }}">Manage Teacher Access</a></li>
-                    {% endif %}
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                {% else %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('register') }}">Register</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flash-messages">
-                    {% for category, message in messages %}
-                        <li class="{{ category }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
+    <nav>
+        <ul>
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
             {% endif %}
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('change_password') }}">Change Password</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
         {% endwith %}
-
         {% block content %}{% endblock %}
-    </main>
-
-    <footer>
-        <!-- Add your footer content here -->
-    </footer>
+    </div>
 </body>
 </html>

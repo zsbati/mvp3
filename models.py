@@ -1,24 +1,25 @@
 # models.py
-from extensions import db
-from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+import enum
 
-class User(db.Model):
+db = SQLAlchemy()
+
+
+class UserType(enum.Enum):
+    ADMIN = 'admin'
+    TEACHER = 'teacher'
+    STUDENT = 'student'
+
+
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-    type = db.Column(db.String(20), nullable=False)  # 'student', 'teacher', 'admin'
-    comments_received = db.relationship('Comment', backref='student', lazy=True, foreign_keys='Comment.student_id')
-    comments_made = db.relationship('Comment', backref='teacher', lazy=True, foreign_keys='Comment.teacher_id')
-
-    accessible_students = db.relationship(
-        'User',
-        secondary='teacher_access',
-        primaryjoin='and_(User.type == "teacher", foreign(User.id) == TeacherAccess.teacher_id)',
-        secondaryjoin='and_(User.type == "student", foreign(User.id) == TeacherAccess.student_id)',
-        backref=db.backref('accessible_teachers', lazy='dynamic')
-    )
+    password_hash = db.Column(db.String(128))
+    user_type = db.Column(db.Enum(UserType), nullable=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -26,30 +27,31 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def __repr__(self):
-        return f'<User {self.username}>'
+
+class TeacherStudent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    comment = db.Column(db.Text)
+
+    teacher = db.relationship(
+        'User',
+        foreign_keys=[teacher_id],
+        backref=db.backref('students_taught', cascade='all, delete-orphan')
+    )
+    student = db.relationship(
+        'User',
+        foreign_keys=[student_id],
+        backref=db.backref('teachers', cascade='all, delete-orphan')
+    )
 
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    comment_text = db.Column(db.Text, nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def __repr__(self):
-        return f'<Comment by {self.teacher.username} on {self.timestamp}>'
-
-class TeacherAccess(db.Model):
-    __tablename__ = 'teacher_access'  # Explicitly set table name
-    id = db.Column(db.Integer, primary_key=True)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    access_granted = db.Column(db.Boolean, default=True)  # Track if access is granted
-
-    # Define relationships for easier access
     teacher = db.relationship('User', foreign_keys=[teacher_id])
     student = db.relationship('User', foreign_keys=[student_id])
-
-    def __repr__(self):
-        return f'<TeacherAccess: {self.teacher.username} -> {self.student.username}, Granted: {self.access_granted}>'

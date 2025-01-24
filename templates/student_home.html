@@ -1,14 +1,21 @@
 <!-- templates/student_home.html -->
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
 
 {% block content %}
-<h2>Welcome, {{ current_user.username }}!</h2>
-<h3>Your Comments</h3>
-<ul>
-    {% for comment in comments %}
-    <li>{{ comment.comment_text }} ({{ comment.timestamp.strftime('%Y-%m-%d %H:%M') }})</li>
-    {% else %}
-    <li>No comments yet.</li>
-    {% endfor %}
-</ul>
+    <h2>Student Dashboard</h2>
+
+    <h3>Teacher Comments</h3>
+    <ul>
+        {% for c in teacher_comments %}
+            <li>
+                <strong>{{ c.teacher.username }}:</strong>
+                {{ c.content }}
+                <em>{{ c.timestamp.strftime('%Y-%m-%d %H:%M') }}</em>
+            </li>
+        {% else %}
+            <li>No comments yet.</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

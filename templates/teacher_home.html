@@ -1,16 +1,21 @@
 <!-- templates/teacher_home.html -->
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard{% endblock %}
 
 {% block content %}
-<h2>Welcome, {{ current_user.username }}!</h2>
-<h3>My Students</h3>
-<ul>
-    {% for student in students %}
-    <li>
-        <a href="{{ url_for('teacher_comment', student_id=student.id) }}">{{ student.username }}</a>
-    </li>
-    {% else %}
-    <li>You do not have access to any students yet.</li>
-    {% endfor %}
-</ul>
+    <h2>Teacher Dashboard</h2>
+
+    <h3>Students</h3>
+    <ul>
+        {% for student in students %}
+            <li>
+                {{ student.username }}
+                <form action="{{ url_for('add_comment', student_id=student.id) }}" method="post">
+                    <textarea name="comment" placeholder="Add comment" required></textarea>
+                    <button type="submit">Add Comment</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}
