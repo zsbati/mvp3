@@ -1,6 +1,16 @@
-{<!-- templates/teacher_home.html -->
-{% extends "base.html" %}
+<!-- templates/teacher_home.html -->
+{% extends 'base.html' %}
+
 {% block content %}
-<h2>Teacher Home</h2>
-<p>Welcome, {{ current_user.username }}! This is the teacher dashboard.</p>
+<h2>Welcome, {{ current_user.username }}!</h2>
+<h3>My Students</h3>
+<ul>
+    {% for student in students %}
+    <li>
+        <a href="{{ url_for('teacher_comment', student_id=student.id) }}">{{ student.username }}</a>
+    </li>
+    {% else %}
+    <li>You do not have access to any students yet.</li>
+    {% endfor %}
+</ul>
 {% endblock %}

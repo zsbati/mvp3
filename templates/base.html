@@ -3,54 +3,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ title if title else "Flask App" }}</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My App{% endblock %}</title>
+    <!-- Add your CSS links or style tags here -->
 </head>
-
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ url_for('home') }}">FlaskApp</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav mr-auto">
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
                 {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('change_password') }}">Change Password</a>
-                    </li>
-                    {% if current_user.role == 'admin' %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin_home') }}">Admin Home</a>
-                        </li>
+                    {% if current_user.type == 'student' %}
+                        <li><a href="{{ url_for('student_comments') }}">My Comments</a></li>
+                    {% elif current_user.type == 'teacher' %}
+                        <li><a href="{{ url_for('teacher_students') }}">My Students</a></li>
+                    {% elif current_user.type == 'admin' %}
+                        <li><a href="{{ url_for('admin_teacher_access') }}">Manage Teacher Access</a></li>
                     {% endif %}
-                {% endif %}
-            </ul>
-            <ul class="navbar-nav">
-                {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <span class="navbar-text mr-3">
-                            Logged in as {{ current_user.username }} ({{ current_user.role }})
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                    </li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
                 {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                    </li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('register') }}">Register</a></li>
                 {% endif %}
             </ul>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <div class="container mt-4">
-        {% with messages = get_flashed_messages() %}
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-info">{{ message }}</div>
-                {% endfor %}
+                <ul class="flash-messages">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
             {% endif %}
         {% endwith %}
+
         {% block content %}{% endblock %}
-    </div>
+    </main>
+
+    <footer>
+        <!-- Add your footer content here -->
+    </footer>
 </body>
 </html>

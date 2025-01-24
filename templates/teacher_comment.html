@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Add Comment for {{ student.username }}</h2>
+<form method="POST">
+    <label for="comment">Comment:</label><br>
+    <textarea id="comment" name="comment" rows="4" cols="50" required></textarea><br>
+    <button type="submit">Add Comment</button>
+</form>
+{% endblock %}
