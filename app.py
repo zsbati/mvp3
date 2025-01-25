@@ -1,4 +1,6 @@
 # app.py
+from functools import wraps
+
 from sqlalchemy import event, text
 from sqlalchemy.engine import Engine
 
@@ -29,14 +31,22 @@ with app.app_context():
             cursor.execute("PRAGMA foreign_keys=ON;")
             cursor.close()
 
+
+    db.create_all()
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
+teacher_access = db.Table('teacher_access',
+                          db.Column('teacher_id', db.Integer, db.ForeignKey('teacher.id'), primary_key=True),
+                          db.Column('student_id', db.Integer, db.ForeignKey('student.id'), primary_key=True)
+                          )
+
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(int(user_id))  # Load from the unified User model
 
 
 @app.route('/')
@@ -114,6 +124,17 @@ def change_password():
     return render_template('change_password.html')
 
 
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.user_type != UserType.ADMIN:
+            flash('You must be an administrator to access this page.', 'danger')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
 @app.route('/admin')
 @login_required
 def admin_home():
@@ -123,6 +144,22 @@ def admin_home():
         return 'Unauthorized', 403
     users = User.query.all()
     return render_template('admin_home.html', users=users)
+
+
+@app.route('/admin/view_students')
+@login_required
+@admin_required
+def view_students():
+    students = User.query.filter_by(user_type=UserType.STUDENT).all()  # Query User, filter by user_type
+    return render_template('view_students.html', students=students)
+
+
+@app.route('/admin/view_teachers')
+@login_required
+@admin_required
+def view_teachers():
+    teachers = User.query.filter_by(user_type=UserType.TEACHER).all()  # Query User, filter by user_type
+    return render_template('view_teachers.html', teachers=teachers)
 
 
 @app.route('/admin/home', methods=['GET'])
@@ -154,11 +191,41 @@ def change_user_password():
 
     # Hash the new password
     hashed_password = generate_password_hash(new_password)
-    user.password = hashed_password
+    user.password_hash = hashed_password
     db.session.commit()
 
     flash(f'Password for {user.username} has been updated successfully.')
     return redirect(url_for('admin_home'))
+
+
+@app.route('/admin/view_student_page/<int:user_id>')
+@login_required
+@admin_required
+def view_student_page(user_id):
+    student = User.query.get_or_404(user_id)
+    if student.user_type != UserType.STUDENT:
+        flash("User is not a student.", "warning")
+        return redirect(url_for('view_students'))
+
+    teacher_comments = Comment.query.filter_by(student_id=student.id).order_by(Comment.timestamp.desc()).all()
+    return render_template('student_home.html', student=student, teacher_comments=teacher_comments,
+                           admin_view=True)  # Pass admin_view flag
+
+
+@app.route('/admin/view_teacher_page/<int:user_id>')
+@login_required
+@admin_required
+def view_teacher_page(user_id):
+    teacher = User.query.get_or_404(user_id)
+    if teacher.user_type != UserType.TEACHER:
+        flash("User is not a teacher.", "warning")
+        return redirect(url_for('view_teachers'))
+
+    teacher_students_relations = TeacherStudent.query.filter_by(teacher_id=teacher.id).all()
+    accessible_students = [relation.student for relation in teacher_students_relations]
+
+    return render_template('teacher_home.html', teacher=teacher, students=accessible_students,
+                           admin_view=True)  # Pass admin_view flag
 
 
 @app.route('/teacher')
@@ -181,7 +248,6 @@ def student_home():
 
     # Grab all comments for this student from the Comment table
     teacher_comments = Comment.query.filter_by(student_id=current_user.id).order_by(Comment.timestamp.desc()).all()
-
     return render_template('student_home.html', teacher_comments=teacher_comments)
 
 
@@ -196,7 +262,7 @@ def create_user():
     user_type_str = request.form['user_type']
     user_type = UserType(user_type_str)
 
-    new_user = User(username=username, user_type=user_type)
+    new_user = User(username=username, user_type=user_type)  # Create User object directly
     new_user.set_password(password)  # Hash the password
     db.session.add(new_user)
     db.session.commit()

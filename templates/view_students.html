@@ -1,0 +1,22 @@
+<!-- templates/view_students.html -->
+{% extends 'base.html' %}
+
+{% block title %}View Students{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h2>Student Accounts</h2>
+    <ul class="list-group">
+      {% for student in students %}
+        <li class="list-group-item">
+          {{ student.username }}
+          <a href="{{ url_for('view_student_page', user_id=student.id) }}" class="btn btn-sm btn-primary float-end">View Page</a>
+        </li>
+      {% endfor %}
+    </ul>
+      {% if not students %}
+          <p>No student accounts found.</p>
+      {% endif %}
+      <a href="{{ url_for('admin_home') }}" class="btn btn-secondary mt-3">Back to Admin Home</a>
+  </div>
+{% endblock %}

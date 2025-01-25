@@ -6,6 +6,12 @@
 {% block content %}
 <h2>Admin Dashboard - {{ current_user.username }}</h2>
 
+<div class="d-grid gap-2 d-md-block">
+    <a href="{{ url_for('view_students') }}" class="btn btn-primary">View Student Accounts</a>
+    <a href="{{ url_for('view_teachers') }}" class="btn btn-primary">View Teacher Accounts</a>
+    <!-- Add other admin functionalities links here -->
+</div>
+
 <h3>Create User</h3>
 <form action="{{ url_for('create_user') }}" method="post">
     <input type="text" name="username" placeholder="Username" required>
@@ -43,7 +49,7 @@
         <label for="user_id">Select User:</label>
         <select name="user_id" id="user_id" required>
             {% for user in users %}
-            <option value="{{ user.id }}">{{ user.username }} ({{ user.role }})</option>
+            <option value="{{ user.id }}">{{ user.username }} ({{ user.user_type.value }})</option>
             {% endfor %}
         </select>
     </div>

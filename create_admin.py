@@ -1,30 +1,25 @@
 # create_admin.py
 from app import app, db
-from models import User, UserType
+from models import User, UserType  # Modified import - using unified User model
+from werkzeug.security import generate_password_hash
 
 
-def create_admin():
+def create_admin_user(username, password):
     with app.app_context():
-        # Create all tables based on models.py
-        db.create_all()
-
-        # Check if an admin user already exists
-        admin_user = User.query.filter_by(user_type=UserType.ADMIN).first()
-        if admin_user:
-            print("An admin user already exists.")
+        existing_admin = User.query.filter_by(username=username, user_type=UserType.ADMIN).first()
+        if existing_admin:
+            print(f"Admin user '{username}' already exists.")
             return
 
-        # Create a new admin user
-        username = input("Enter admin username: ")
-        password = input("Enter admin password: ")
-
-        new_admin = User(username=username, user_type=UserType.ADMIN)
-        new_admin.set_password(password)  # Hash the password
-        db.session.add(new_admin)
+        hashed_password = generate_password_hash(password)
+        admin_user = User(username=username, password_hash=hashed_password,
+                          user_type=UserType.ADMIN)  # Create User with user_type
+        db.session.add(admin_user)
         db.session.commit()
-
         print(f"Admin user '{username}' created successfully.")
 
 
-if __name__ == "__main__":
-    create_admin()
+if __name__ == '__main__':
+    admin_username = "admin"
+    admin_password = "password"
+    create_admin_user(admin_username, admin_password)

@@ -1,21 +1,35 @@
 <!-- templates/teacher_home.html -->
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}Teacher Dashboard{% endblock %}
+{% block title %}Teacher Home{% endblock %}
 
 {% block content %}
-    <h2>Teacher Dashboard - {{ current_user.username }}</h2>
+  <div class="container">
+    <h2>Teacher Home</h2>
+     {% if admin_view %}
+      <div class="alert alert-info" role="alert">
+        You are viewing this page as Administrator.
+      </div>
+      <p>Viewing Teacher Page: <strong>{{ teacher.username }}</strong></p> {# Added teacher username display for admin view #}
+    {% else %}
+       <p>Welcome, Teacher {{ current_user.username }}!</p> {# Original welcome message for teacher #}
+    {% endif %}
 
-    <h3>Students</h3>
-    <ul>
-        {% for student in students %}
-            <li>
-                {{ student.username }}
-                <form action="{{ url_for('add_comment', student_id=student.id) }}" method="post">
+    <h3>Accessible Students</h3>
+    <ul class="list-group">
+    {% for student in students %}
+        <li class="list-group-item">{{ student.username }}</li>
+        <form action="{{ url_for('add_comment', student_id=student.id) }}" method="post">
                     <textarea name="comment" placeholder="Add comment" required></textarea>
                     <button type="submit">Add Comment</button>
-                </form>
-            </li>
-        {% endfor %}
+        </form>
+    {% else %}
+        <li class="list-group-item">No students are accessible to you yet.</li>
+    {% endfor %}
     </ul>
+
+    {% if not admin_view %} {# Only show logout for actual teacher view #}
+        <a href="{{ url_for('logout') }}" class="btn btn-danger mt-3">Logout</a>
+    {% endif %}
+  </div>
 {% endblock %}
