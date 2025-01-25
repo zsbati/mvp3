@@ -4,36 +4,58 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-    <h2>Admin Dashboard</h2>
+<h2>Admin Dashboard - {{ current_user.username }}</h2>
 
-    <h3>Create User</h3>
-    <form action="{{ url_for('create_user') }}" method="post">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <select name="user_type">
-            <option value="admin">Admin</option>
-            <option value="teacher">Teacher</option>
-            <option value="student">Student</option>
+<h3>Create User</h3>
+<form action="{{ url_for('create_user') }}" method="post">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <select name="user_type">
+        <option value="ADMIN">Admin</option>
+        <option value="TEACHER">Teacher</option>
+        <option value="STUDENT">Student</option>
+    </select>
+    <button type="submit">Create User</button>
+</form>
+
+<h3>Users</h3>
+<ul>
+    {% for user in users %}
+    <li>
+        {{ user.username }} ({{ user.user_type.value }})
+        <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display: inline;">
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+<h3>Grant Teacher Access to Student</h3>
+<form action="{{ url_for('grant_access') }}" method="post">
+    <input type="text" name="teacher_username" placeholder="Teacher Username" required>
+    <input type="text" name="student_username" placeholder="Student Username" required>
+    <button type="submit">Grant Access</button>
+</form>
+
+<h2>Change User Password</h2>
+<form method="POST" action="{{ url_for('change_user_password') }}">
+    <div>
+        <label for="user_id">Select User:</label>
+        <select name="user_id" id="user_id" required>
+            {% for user in users %}
+            <option value="{{ user.id }}">{{ user.username }} ({{ user.role }})</option>
+            {% endfor %}
         </select>
-        <button type="submit">Create User</button>
-    </form>
+    </div>
+    <div>
+        <label for="new_password">New Password:</label>
+        <input type="password" name="new_password" id="new_password" required>
+    </div>
+    <button type="submit">Change Password</button>
+</form>
 
-    <h3>Users</h3>
-    <ul>
-        {% for user in users %}
-            <li>
-                {{ user.username }} ({{ user.user_type.value }})
-                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display: inline;">
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
+{% if message %}
+<p>{{ message }}</p>
+{% endif %}
 
-    <h3>Grant Teacher Access to Student</h3>
-    <form action="{{ url_for('grant_access') }}" method="post">
-        <input type="text" name="teacher_username" placeholder="Teacher Username" required>
-        <input type="text" name="student_username" placeholder="Student Username" required>
-        <button type="submit">Grant Access</button>
-    </form>
 {% endblock %}

@@ -117,10 +117,48 @@ def change_password():
 @app.route('/admin')
 @login_required
 def admin_home():
+    print(f"Current user type: {current_user.user_type}")  # Temporary check
+
     if current_user.user_type != UserType.ADMIN:
         return 'Unauthorized', 403
     users = User.query.all()
     return render_template('admin_home.html', users=users)
+
+
+@app.route('/admin/home', methods=['GET'])
+@login_required
+def admin_home_display():
+    users = User.query.all()  # Fetch all users to populate the dropdown
+    return render_template('admin_home.html', users=users)
+
+
+@app.route('/admin/change_password', methods=['POST'])
+@login_required
+def change_user_password():
+    if current_user.user_type != UserType.ADMIN:
+        flash('Access denied.')
+        return redirect(url_for('login'))
+
+    user_id = request.form.get('user_id')
+    new_password = request.form.get('new_password')
+
+    # Input validation
+    if not user_id or not new_password:
+        flash('Invalid input.')
+        return redirect(url_for('admin_home'))
+
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        flash('User not found.')
+        return redirect(url_for('admin_home'))
+
+    # Hash the new password
+    hashed_password = generate_password_hash(new_password)
+    user.password = hashed_password
+    db.session.commit()
+
+    flash(f'Password for {user.username} has been updated successfully.')
+    return redirect(url_for('admin_home'))
 
 
 @app.route('/teacher')

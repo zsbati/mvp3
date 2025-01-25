@@ -10,9 +10,9 @@ db = SQLAlchemy()
 
 
 class UserType(enum.Enum):
-    ADMIN = 'admin'
-    TEACHER = 'teacher'
-    STUDENT = 'student'
+    ADMIN = 'ADMIN'
+    TEACHER = 'TEACHER'
+    STUDENT = 'STUDENT'
 
 
 class User(db.Model, UserMixin):
