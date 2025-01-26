@@ -28,9 +28,5 @@
         <li class="list-group-item">No comments yet.</li>
     {% endfor %}
     </ul>
-
-     {% if not admin_view %}  {# Only show logout for actual student view #}
-        <a href="{{ url_for('logout') }}" class="btn btn-danger mt-3">Logout</a>
-    {% endif %}
   </div>
 {% endblock %}
