@@ -3,34 +3,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}My App{% endblock %}</title>
-</head>
-<body>
-    <nav>
-        <ul>
-            {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-            {% else %}
-                <li><a href="{{ url_for('login') }}">Login</a></li>
-                <li><a href="{{ url_for('register') }}">Register</a></li>
-            {% endif %}
-            {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('change_password') }}">Change Password</a></li>
-            {% endif %}
-        </ul>
-    </nav>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MVP3 - Default Title{% endblock %}</title>
 
-    <div class="container">
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <ul class=flashes>
-            {% for message in messages %}
-              <li>{{ message }}</li>
-            {% endfor %}
-            </ul>
-          {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
-    </div>
+    <!-- Static Files (CSS, Images, etc.) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    {% block head %}{% endblock %}  <!-- Allows adding specific head elements to child templates -->
+</head>
+<body style="background-image: url('{{ url_for('static', filename='img/background.jpg') }}'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
+<div id="header">
+    <a href="/">
+        <picture>
+            <source srcset="{{ url_for('static', filename='img/logo.avif') }}" type="image/avif">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Your Logo" class="logo">
+        </picture>
+    </a>
+  <div class="user-options">
+      {% if current_user.is_authenticated %}
+          <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+          <a href="{{ url_for('register') }}">Register</a>
+      {% endif %}
+  </div>
+</div>
+
+<div id="content">
+    {% block content %}{% endblock %}
+</div>
+
+<div id="footer">
+    <p>&copy; 2025 My MVP3 Application</p>
+</div>
 </body>
 </html>

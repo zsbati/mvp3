@@ -1,0 +1,50 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    color: white; /* Set default text color to white */
+}
+
+.header-container {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    height: 50px; /* Adjust the logo height as needed */
+    vertical-align: middle;
+    margin-left: 20px;
+}
+
+.user-options {
+    margin-right: 20px;
+}
+
+.user-options a {
+    color: white;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.user-options a:hover{
+    text-decoration: underline;
+}
+
+.container {
+    padding: 20px;
+    margin: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.footer-container {
+    text-align: center;
+    padding: 20px 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
