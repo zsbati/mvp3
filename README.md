@@ -33,8 +33,8 @@ Viewing Comments: allowed only to the administrator and the respective students'
 V. Usage
 1) Create the Administrator and Database: python create_admin.py
 2) Start the Flask Application: python app.py
-Log In as Administrator and change Administrator Password: Navigate to the "Change Password" section and follow the prompts.
-Add user accounts (teachers, students) then grant access to teachers to their particular students
+3) Log In as Administrator and change administrator password: navigate to the "Change Password" section and follow the prompts.
+4) Add user accounts (teachers, students) then grant access to teachers to their particular students. May add some fellow administrators.
 
 
 VI. Dependencies 
