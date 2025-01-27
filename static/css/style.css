@@ -49,15 +49,14 @@ body {
 
 .left-column, .right-column {
     background-color: rgba(242, 242, 242, 0.3); /* Adjust opacity as needed */
+    padding: 20px;
 }
 
 .left-column h2 {
     flex: 0 0 250px; /* Fixed width for the left column */
-    padding: 20px;
 }
 
 .right-column {
     flex: 1; /* Allow the right column to grow */
-    padding: 20px;
     overflow-y: auto; /* Add scroll if the content is too tall */
 }
