@@ -4,29 +4,31 @@
 {% block title %}Teacher Home{% endblock %}
 
 {% block content %}
-  <div class="teacher_student_container">
+<div class="teacher_student_container">
     <h2>Teacher Home</h2>
-     {% if admin_view %}
-      <div class="alert alert-info" role="alert">
+    {% if admin_view %}
+    <div class="alert alert-info" role="alert">
         You are viewing this page as Administrator.
-      </div>
-      <p>Viewing Teacher Page: <strong>{{ teacher.username }}</strong></p> {# Added teacher username display for admin view #}
+    </div>
+    <p>Viewing Teacher Page: <strong>{{ teacher.username }}</strong></p> {# Added teacher username display for admin
+    view #}
     {% else %}
-       <p>Welcome, Teacher {{ current_user.username }}!</p> {# Original welcome message for teacher #}
+    <p>Welcome, Teacher {{ current_user.username }}!</p> {# Original welcome message for teacher #}
     {% endif %}
 
     <h3>Accessible Students</h3>
     <ul class="list-group">
-    {% for student in students %}
+        {% set sorted_students = students | sort(attribute='username') %}
+        {% for student in sorted_students %}
         <li class="list-group-item">{{ student.username }}</li>
         <form action="{{ url_for('add_comment', student_id=student.id) }}" method="post">
-                    <textarea name="comment" placeholder="Add comment" required></textarea>
-                    <button type="submit">Add Comment</button>
+            <textarea name="comment" placeholder="Add comment" required></textarea>
+            <button type="submit">Add Comment</button>
         </form>
-    {% else %}
+        {% else %}
         <li class="list-group-item">No students are accessible to you yet.</li>
-    {% endfor %}
+        {% endfor %}
     </ul>
 
-  </div>
+</div>
 {% endblock %}

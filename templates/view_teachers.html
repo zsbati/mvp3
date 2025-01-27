@@ -4,19 +4,21 @@
 {% block title %}View Teachers{% endblock %}
 
 {% block content %}
-  <div class="container">
+<div class="container">
     <h2>Teacher Accounts</h2>
     <ul class="list-group">
-      {% for teacher in teachers %}
+        {% set sorted_teachers = teachers | sort(attribute='username') %}
+        {% for teacher in sorted_teachers %}
         <li class="list-group-item">
-          {{ teacher.username }}
-          <a href="{{ url_for('view_teacher_page', user_id=teacher.id) }}" class="btn btn-sm btn-primary float-end">View Page</a>
+            {{ teacher.username }}
+            <a href="{{ url_for('view_teacher_page', user_id=teacher.id) }}" class="btn btn-sm btn-primary float-end">View
+                Page</a>
         </li>
-      {% endfor %}
+        {% endfor %}
     </ul>
-      {% if not teachers %}
-          <p>No teacher accounts found.</p>
-      {% endif %}
-      <a href="{{ url_for('admin_home') }}" class="btn btn-secondary mt-3">Back to Admin Home</a>
-  </div>
+    {% if not teachers %}
+    <p>No teacher accounts found.</p>
+    {% endif %}
+    <a href="{{ url_for('admin_home') }}" class="btn btn-secondary mt-3">Back to Admin Home</a>
+</div>
 {% endblock %}

@@ -4,19 +4,21 @@
 {% block title %}View Students{% endblock %}
 
 {% block content %}
-  <div class="container">
+<div class="container">
     <h2>Student Accounts</h2>
     <ul class="list-group">
-      {% for student in students %}
+        {% set sorted_students = students | sort(attribute='username') %}
+        {% for student in sorted_students %}
         <li class="list-group-item">
-          {{ student.username }}
-          <a href="{{ url_for('view_student_page', user_id=student.id) }}" class="btn btn-sm btn-primary float-end">View Page</a>
+            {{ student.username }}
+            <a href="{{ url_for('view_student_page', user_id=student.id) }}" class="btn btn-sm btn-primary float-end">View
+                Page</a>
         </li>
-      {% endfor %}
+        {% endfor %}
     </ul>
-      {% if not students %}
-          <p>No student accounts found.</p>
-      {% endif %}
-      <a href="{{ url_for('admin_home') }}" class="btn btn-secondary mt-3">Back to Admin Home</a>
-  </div>
+    {% if not students %}
+    <p>No student accounts found.</p>
+    {% endif %}
+    <a href="{{ url_for('admin_home') }}" class="btn btn-secondary mt-3">Back to Admin Home</a>
+</div>
 {% endblock %}
