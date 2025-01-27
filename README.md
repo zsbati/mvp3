@@ -10,28 +10,29 @@ The motivation for developing this application is to provide a secure and organi
 
 
 III. User Accounts and Password Management:
-All users (students, teachers, and the administrator) can change their passwords.
-The administrator can create and delete student and teacher accounts, and change their passwords.
+1) All users (students, teachers, and the administrator) can change their passwords.
+2) The administrator can create and delete student and teacher accounts, and change their passwords.
 
 
 IV. Role-Specific Features:
 Administrator
-Create and delete Teacher and Student/Parent accounts.
-Change any user’s password.
-Grant access for Teachers to comment on specific students.
-View all student accounts and all comments posted by teachers.
-View teacher accounts and see each teacher’s assigned students.
+
+1) Create and delete Teacher and Student/Parent accounts.
+2) Change any user’s password.
+3) Grant access for Teachers to comment on specific students.
+4) View all student accounts and all comments posted by teachers.
+5) View teacher accounts and see each teacher’s assigned students.
 
 Teacher
-Post comments on assigned student accounts (only to those allowed by the administrator).
-They cannot see other teachers’ comments.
+
+1) Post comments on assigned student accounts (only to those allowed by the administrator). One teacher cannot see other teachers’ comments.
 Viewing Comments: allowed only to the administrator and the respective students' parents.
 
 
 
 V. Usage
-Create the Administrator and Database: python create_admin.py
-Start the Flask Application: python app.py
+1) Create the Administrator and Database: python create_admin.py
+2) Start the Flask Application: python app.py
 Log In as Administrator and change Administrator Password: Navigate to the "Change Password" section and follow the prompts.
 Add user accounts (teachers, students) then grant access to teachers to their particular students
 
