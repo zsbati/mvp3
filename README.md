@@ -37,7 +37,7 @@ V. Usage
 4) Add user accounts (teachers, students) then grant access to teachers to their particular students. May add some fellow administrators.
 
 
-VI. Dependencies 
+VI. Dependencies: 
 blinker==1.8.2,
 click==8.1.7,
 colorama==0.4.6,
