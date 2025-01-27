@@ -57,31 +57,31 @@
         {% endif %}
     </div>
 
-<div class="right-column">
-    <h3>Users</h3>
-    <ul>
-        {% set grouped_users = users | sort(attribute='username') | groupby('user_type.value') %}
+    <div class="right-column">
+        <h3>Users</h3>
+        <ul>
+            {% set grouped_users = users | sort(attribute='username') | groupby('user_type.value') %}
 
-        {% for group in grouped_users %}
+            {% for group in grouped_users %}
             {% if group.grouper == 'ADMINISTRATOR' %}
-                <h3>Administrators</h3>
+            <h3>Administrators</h3>
             {% elif group.grouper == 'TEACHER' %}
-                <h3>Teachers</h3>
+            <h3>Teachers</h3>
             {% elif group.grouper == 'STUDENT' %}
-                <h3>Students</h3>
+            <h3>Students</h3>
             {% endif %}
 
             {% for user in group.list %}
-                <li>
-                    {{ user.username }} ({{ user.user_type.value }})
-                    <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display: inline;">
-                        <button type="submit">Delete</button>
-                    </form>
-                </li>
+            <li>
+                {{ user.username }} ({{ user.user_type.value }})
+                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display: inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
             {% endfor %}
-        {% endfor %}
-    </ul>
-</div>
+            {% endfor %}
+        </ul>
+    </div>
 
 </div>
 
