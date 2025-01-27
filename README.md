@@ -1,8 +1,10 @@
 I. Quick Summary
+
 This is a Python application built using Flask that manages three types of user accounts—Administrator, Teacher, and Student/Parent—enabling permissions, comment-posting, and account maintenance.
 
 
 II. Motivation
+
 The motivation for developing this application is to provide a secure and organized platform for managing interactions between students, teachers, and the administrative staff. This application aims to:
 1) Ensure Data Security: By controlling access and visibility of sensitive information, such as comments and account details.
 2) Streamline Communication: Facilitate structured communication between teachers and students or parents, with the administrator overseeing and managing the process.
@@ -15,6 +17,7 @@ III. User Accounts and Password Management:
 
 
 IV. Role-Specific Features:
+
 Administrator
 
 1) Create and delete Teacher and Student/Parent accounts.
