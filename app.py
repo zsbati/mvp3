@@ -144,7 +144,10 @@ def admin_home():
 
     if current_user.user_type != UserType.ADMIN:
         return 'Unauthorized', 403
-    users = User.query.all()
+    users = User.query.order_by(
+        User.user_type.asc(),  # Sort by user_type (ADMIN, STUDENT, TEACHER)
+        User.username.asc()    # Sort by username alphabetically within each user_type
+    ).all()
     return render_template('admin_home.html', users=users)
 
 
@@ -259,17 +262,39 @@ def create_user():
     if current_user.user_type != UserType.ADMIN:
         return 'Unauthorized', 403
 
-    username = request.form['username']
-    password = request.form['password']
-    user_type_str = request.form['user_type']
-    user_type = UserType(user_type_str)
+    username = request.form.get('username')
+    password = request.form.get('password')
+    user_type_str = request.form.get('user_type')
 
-    new_user = User(username=username, user_type=user_type)  # Create User object directly
+    if not username or not password or not user_type_str:
+        flash('All fields are required', 'error')
+        return redirect(url_for('admin_home'))
+
+    try:
+        user_type = UserType[user_type_str.upper()]  # Ensure case-insensitive matching for enum
+    except KeyError:
+        flash('Invalid user type', 'error')
+        return redirect(url_for('admin_home'))
+
+    # Check if the user already exists
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user:
+        flash(f'User {username} already exists', 'error')
+        return redirect(url_for('admin_home'))
+
+    # Create and save the new user
+    new_user = User(username=username, user_type=user_type)
     new_user.set_password(password)  # Hash the password
     db.session.add(new_user)
-    db.session.commit()
 
-    flash(f'User {username} created successfully')
+    try:
+        db.session.commit()
+        flash(f'User {username} created successfully', 'success')
+    except Exception as e:
+        db.session.rollback()  # Rollback in case of any error
+        # current_app.logger.error(f"Failed to create user: {e}")
+        flash('Failed to create user. Please try again.', 'error')
+
     return redirect(url_for('admin_home'))
 
 

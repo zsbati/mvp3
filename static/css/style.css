@@ -60,3 +60,41 @@ body {
     flex: 1; /* Allow the right column to grow */
     overflow-y: auto; /* Add scroll if the content is too tall */
 }
+
+.flash {
+    display: block;
+    visibility: visible;
+    margin: 10px 0;
+    padding: 10px 15px;
+    border-radius: 4px;
+    color: #fff; /* White text for better contrast */
+    font-size: 14px;
+    z-index: 1000;
+    opacity: 0.95;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Success Message */
+.flash.success {
+    background-color: #4CAF50; /* Green */
+    border: 1px solid #388E3C;
+}
+
+/* Error Message */
+.flash.error {
+    background-color: #f44336; /* Red */
+    border: 1px solid #d32f2f;
+}
+
+/* Warning Message */
+.flash.warning {
+    background-color: #ff9800; /* Orange */
+    border: 1px solid #fb8c00;
+}
+
+/* Info Message */
+.flash.info {
+    background-color: #2196F3; /* Blue */
+    border: 1px solid #1976D2;
+}
