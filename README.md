@@ -22,7 +22,7 @@ Administrator
 
 1) Create and delete Teacher and Student/Parent accounts.
 2) Change any user’s password.
-3) Grant access for Teachers to comment on specific students.
+3) Grant access to Teachers to comment on specific students.
 4) View all student accounts and all comments posted by teachers.
 5) View teacher accounts and see each teacher’s assigned students.
 

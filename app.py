@@ -111,32 +111,6 @@ def admin_required(f):
     return decorated_function
 
 
-@app.route('/register', methods=['GET', 'POST'])
-@login_required
-@admin_required
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user_type_str = request.form['user_type']
-        user_type = UserType(user_type_str)
-
-        existing_user = User.query.filter_by(username=username).first()
-        if existing_user:
-            flash('Username already exists')
-            return redirect(url_for('register'))
-
-        new_user = User(username=username, user_type=user_type)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-
-        flash('Registration successful, please log in')
-        return redirect(url_for('login'))
-
-    return render_template('register.html')
-
-
 @app.route('/admin')
 @login_required
 def admin_home():
@@ -146,7 +120,7 @@ def admin_home():
         return 'Unauthorized', 403
     users = User.query.order_by(
         User.user_type.asc(),  # Sort by user_type (ADMIN, STUDENT, TEACHER)
-        User.username.asc()    # Sort by username alphabetically within each user_type
+        User.username.asc()  # Sort by username alphabetically within each user_type
     ).all()
     return render_template('admin_home.html', users=users)
 
@@ -258,6 +232,7 @@ def student_home():
 
 @app.route('/create_user', methods=['POST'])
 @login_required
+@admin_required
 def create_user():
     if current_user.user_type != UserType.ADMIN:
         return 'Unauthorized', 403
