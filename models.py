@@ -21,6 +21,11 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
     user_type = db.Column(db.Enum(UserType), nullable=False)  # Using UserType enum for role
 
+    def __init__(self, username, user_type, *args, **kwargs):
+        super().__init__(*args, **kwargs)  # Call the parent class constructor
+        self.username = username
+        self.user_type = user_type
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

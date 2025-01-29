@@ -268,7 +268,7 @@ def create_user():
     except Exception as e:
         db.session.rollback()  # Rollback in case of any error
         # current_app.logger.error(f"Failed to create user: {e}")
-        flash('Failed to create user. Please try again.', 'error')
+        flash(f'Failed to create user. Please try again. An error occurred: {e}')
 
     return redirect(url_for('admin_home'))
 
