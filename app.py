@@ -103,9 +103,16 @@ def change_password():
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if not current_user.is_authenticated or current_user.user_type != UserType.ADMIN:
-            flash('You must be an administrator to access this page.', 'danger')
+        if not current_user.is_authenticated:
+            print("admin_required: User is not authenticated")  # Add logging
+            flash('You must be logged in to access this page.', 'danger')  # More general flash message
             return redirect(url_for('login'))
+        elif current_user.user_type != UserType.ADMIN:  # Use elif instead of separate if
+            print(f"admin_required: User is logged in, but user_type is {current_user.user_type}, not ADMIN")  # Add logging
+            flash('You are not authorized to access this page.', 'danger')  # More appropriate flash message
+            return redirect(url_for('home'))  # Or another appropriate page
+        else:
+            print("admin_required: User is an ADMIN. Proceeding to view function.")  # Add logging
         return f(*args, **kwargs)
 
     return decorated_function
@@ -321,6 +328,45 @@ def grant_access():
         flash('Invalid teacher or student username')
 
     return redirect(url_for('admin_home'))
+
+
+@app.route('/revoke_access', methods=['POST'])
+@login_required
+def revoke_access():
+    if current_user.user_type != UserType.ADMIN:
+        return 'Unauthorized', 403
+
+    teacher_username = request.form['teacher_username']  # changed from teacher to teacher_username
+    student_username = request.form['student_username']  # changed from student to student_username
+
+    teacher = User.query.filter_by(username=teacher_username, user_type=UserType.TEACHER).first()
+    student = User.query.filter_by(username=student_username, user_type=UserType.STUDENT).first()
+
+    if teacher and student:
+        # Find the existing relationship
+        existing_access = TeacherStudent.query.filter_by(teacher_id=teacher.id, student_id=student.id).first()
+        if existing_access:
+            db.session.delete(existing_access)
+            db.session.commit()
+            flash(f'Access revoked for {teacher_username} from {student_username}')
+        else:
+            flash(f'No existing access to revoke for {teacher_username} from {student_username}')
+    else:
+        flash('Invalid teacher or student username')  # Keep error handling consistent
+
+    return redirect(url_for('admin_home'))
+
+
+@app.route('/revoke_access_form')
+@login_required
+def revoke_access_form():
+    if current_user.user_type != UserType.ADMIN:
+        return 'Unauthorized', 403
+
+    teachers = User.query.filter_by(user_type=UserType.TEACHER).all()
+    students = User.query.filter_by(user_type=UserType.STUDENT).all()
+
+    return render_template('revoke_access.html', teachers=teachers, students=students)
 
 
 @app.route('/add_comment/<int:student_id>', methods=['POST'])
