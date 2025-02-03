@@ -360,6 +360,7 @@ def revoke_access():
 
 @app.route('/revoke_access_form')
 @login_required
+@admin_required
 def revoke_access_form():
     if current_user.user_type != UserType.ADMIN:
         return 'Unauthorized', 403
@@ -401,7 +402,10 @@ def add_comment(student_id):
 
 
 @app.route('/my_comments')
+@login_required
 def my_comments():
+    if current_user.user_type != UserType.TEACHER:
+        return 'Unauthorized, if you are administrator or inspector, please see the specific students\' page.', 403
     comments = Comment.query.filter_by(teacher_id=current_user.id).all()
     print(comments)
     return render_template('my_comments.html', comments=comments)
