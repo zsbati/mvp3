@@ -108,7 +108,8 @@ def admin_required(f):
             flash('You must be logged in to access this page.', 'danger')  # More general flash message
             return redirect(url_for('login'))
         elif current_user.user_type != UserType.ADMIN:  # Use elif instead of separate if
-            print(f"admin_required: User is logged in, but user_type is {current_user.user_type}, not ADMIN")  # Add logging
+            print(
+                f"admin_required: User is logged in, but user_type is {current_user.user_type}, not ADMIN")  # Add logging
             flash('You are not authorized to access this page.', 'danger')  # More appropriate flash message
             return redirect(url_for('home'))  # Or another appropriate page
         else:
@@ -397,6 +398,13 @@ def add_comment(student_id):
         flash('You do not have access to this student')
 
     return redirect(url_for('teacher_home'))
+
+
+@app.route('/my_comments')
+def my_comments():
+    comments = Comment.query.filter_by(teacher_id=current_user.id).all()
+    print(comments)
+    return render_template('my_comments.html', comments=comments)
 
 
 if __name__ == '__main__':

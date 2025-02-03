@@ -1,0 +1,19 @@
+<!-- templates/my_comments.html -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>My Comments</h1>
+
+{% if comments %}
+<ul>
+    {% for comment in comments %}
+    <li>
+        Student: {{ comment.student.username }} - Comment: {{ comment.content }}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No comments found.</p>
+{% endif %}
+{% endblock %}
