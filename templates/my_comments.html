@@ -9,7 +9,7 @@
 <ul>
     {% for comment in comments %}
     <li>
-        Student: {{ comment.student.username }} - Comment: {{ comment.content }}
+       At: {{comment.timestamp}} - Student: {{ comment.student.username }} - Comment: {{ comment.content }}
     </li>
     {% endfor %}
 </ul>
