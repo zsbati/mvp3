@@ -440,5 +440,42 @@ def my_comments():
     return render_template('my_comments.html', comments=comments)
 
 
+@app.route('/add_grade', methods=['POST'])
+@login_required
+def add_grade():
+    if current_user.user_type != UserType.ADMIN:
+        flash("You are not authorized to add grades.", "error")
+        return redirect(url_for('admin_home'))
+
+    student_id = request.form.get('student_id')
+    date = request.form.get('date')
+    subject = request.form.get('subject')
+    grade = request.form.get('grade')
+
+    # Validate input
+    if not all([student_id, date, subject, grade]):
+        flash("All fields are required.", "error")
+        return redirect(url_for('admin_home'))
+
+    # Verify the selected user is a student
+    student = User.query.get(student_id)
+    if not student or student.user_type != UserType.STUDENT:
+        flash("Invalid student selected.", "error")
+        return redirect(url_for('admin_home'))
+
+    # Create new grade
+    new_grade = Grade(
+        student_id=student_id,
+        date=date,
+        subject=subject,
+        grade=grade
+    )
+    db.session.add(new_grade)
+    db.session.commit()
+
+    flash("Grade added successfully.", "success")
+    return redirect(url_for('admin_home'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)

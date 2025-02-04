@@ -16,77 +16,114 @@
             <!-- Add other admin functionalities links here -->
         </div>
 
-        <h3>Create User</h3>
-        <form action="{{ url_for('create_user') }}" method="post">
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <select name="user_type">
-                <option value="ADMIN">Admin</option>
-                <option value="TEACHER">Teacher</option>
-                <option value="STUDENT">Student</option>
-            </select>
-            <button type="submit">Create User</button>
-        </form>
-
-
-        <h3>Grant Teacher Access to Student</h3>
-        <form action="{{ url_for('grant_access') }}" method="post">
-            <input type="text" name="teacher_username" placeholder="Teacher Username" required>
-            <input type="text" name="student_username" placeholder="Student Username" required>
-            <button type="submit">Grant Access</button>
-        </form>
-
-        <h3>Revoke Teacher Access to Student</h3>
-        <a href="{{ url_for('revoke_access_form') }}" class="btn btn-secondary">Revoke Access</a>
-
-
-        <h2>Change User Password</h2>
-        <form method="POST" action="{{ url_for('change_user_password') }}">
-            <div>
-                <label for="user_id">Select User:</label>
-                <select name="user_id" id="user_id" required>
-                    {% for user in users %}
-                    <option value="{{ user.id }}">{{ user.username }} ({{ user.user_type.value }})</option>
-                    {% endfor %}
+        <section>
+            <h3>Create User</h3>
+            <form action="{{ url_for('create_user') }}" method="post">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <select name="user_type">
+                    <option value="ADMIN">Admin</option>
+                    <option value="TEACHER">Teacher</option>
+                    <option value="STUDENT">Student</option>
                 </select>
-            </div>
-            <div>
-                <label for="new_password">New Password:</label>
-                <input type="password" name="new_password" id="new_password" required>
-            </div>
-            <button type="submit">Change Password</button>
-        </form>
+                <button type="submit">Create User</button>
+            </form>
+        </section>
+
+        <section>
+            <h3>Grant Teacher Access to Student</h3>
+            <form action="{{ url_for('grant_access') }}" method="post">
+                <input type="text" name="teacher_username" placeholder="Teacher Username" required>
+                <input type="text" name="student_username" placeholder="Student Username" required>
+                <button type="submit">Grant Access</button>
+            </form>
+        </section>
+
+        <section>
+            <h3>Revoke Teacher Access to Student</h3>
+            <a href="{{ url_for('revoke_access_form') }}" class="btn btn-secondary">Revoke Access</a>
+        </section>
+
+        <section>
+            <h2>Change User Password</h2>
+            <form method="POST" action="{{ url_for('change_user_password') }}">
+                <div>
+                    <label for="user_id">Select User:</label>
+                    <select name="user_id" id="user_id" required>
+                        {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }} ({{ user.user_type.value }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="new_password">New Password:</label>
+                    <input type="password" name="new_password" id="new_password" required>
+                </div>
+                <button type="submit">Change Password</button>
+            </form>
+        </section>
+
 
         {% if message %}
         <p>{{ message }}</p>
         {% endif %}
+
+        <section>
+            <h3>Add Grade for Student</h3>
+            <form method="POST" action="{{ url_for('add_grade') }}">
+                <div>
+                    <label for="student_id">Select Student:</label>
+                    <select name="student_id" id="student_id" required>
+                        {% for user in users if user.user_type.value == 'STUDENT' %}
+                        <option value="{{ user.id }}">{{ user.username }} (Student)</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="date">Date:</label>
+                    <input type="text" name="date" id="date" placeholder="YYYY-MM-DD" required>
+                </div>
+                <div>
+                    <label for="subject">Subject:</label>
+                    <input type="text" name="subject" id="subject" required>
+                </div>
+                <div>
+                    <label for="grade">Grade:</label>
+                    <input type="text" name="grade" id="grade" required>
+                </div>
+                <button type="submit">Add Grade</button>
+            </form>
+        </section>
     </div>
 
     <div class="right-column">
-        <h3>Users</h3>
-        <ul>
-            {% set grouped_users = users | sort(attribute='username') | groupby('user_type.value') %}
+        <section>
+            <h3>Users</h3>
+            <ul>
+                {% set grouped_users = users | sort(attribute='username') | groupby('user_type.value') %}
 
-            {% for group in grouped_users %}
-            {% if group.grouper == 'ADMINISTRATOR' %}
-            <h3>Administrators</h3>
-            {% elif group.grouper == 'TEACHER' %}
-            <h3>Teachers</h3>
-            {% elif group.grouper == 'STUDENT' %}
-            <h3>Students</h3>
-            {% endif %}
+                {% for group in grouped_users %}
+                {% if group.grouper == 'ADMINISTRATOR' %}
 
-            {% for user in group.list %}
-            <li>
-                {{ user.username }} ({{ user.user_type.value }})
-                <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display: inline;"
-                      onsubmit="return confirmDelete('{{ user.username }}');">
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
-            {% endfor %}
-            {% endfor %}
-        </ul>
+                <h4>Administrators</h4>
+                {% elif group.grouper == 'TEACHER' %}
+                <h4>Teachers</h4>
+                {% elif group.grouper == 'STUDENT' %}
+                <h4>Students</h4>
+                {% endif %}
+
+                {% for user in group.list %}
+                <li>
+                    {{ user.username }} ({{ user.user_type.value }})
+                    <form action="{{ url_for('delete_user', user_id=user.id) }}" method="post" style="display: inline;"
+                          onsubmit="return confirmDelete('{{ user.username }}');">
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+                {% endfor %}
+                {% endfor %}
+            </ul>
+        </section>
     </div>
 
 </div>

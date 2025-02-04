@@ -4,29 +4,52 @@
 {% block title %}Student Home{% endblock %}
 
 {% block content %}
-  <div class="teacher_student_container">
+<div class="teacher_student_container">
     <h2>Student Home</h2>
     {% if admin_view %}
-      <div class="alert alert-info" role="alert">
+    <div class="alert alert-info" role="alert">
         You are viewing this page as Administrator.
-      </div>
-      <p>Viewing Student Page: <strong>{{ student.username }}</strong></p>  {# Added student username display for admin view #}
+    </div>
+    <p>Viewing Student Page: <strong>{{ student.username }}</strong></p> {# Added student username display for admin
+    view #}
     {% else %}
-      <p>Welcome, Student {{ current_user.username }}!</p>  {# Original welcome message for student #}
+    <p>Welcome, Student {{ current_user.username }}!</p> {# Original welcome message for student #}
     {% endif %}
 
 
+    <h3>Your Grades</h3>
+    <ul class="list-group">
+        {% if admin_view %}
+        {% for grade in student.grades %}
+        <li class="list-group-item">
+            <strong>{{ grade.subject }}</strong> - Grade: {{ grade.grade }} (Date: {{ grade.date }})
+        </li>
+        {% else %}
+        <li class="list-group-item">No grades yet.</li>
+        {% endfor %}
+        {% else %}
+        {% for grade in current_user.grades %}
+        <li class="list-group-item">
+            <strong>{{ grade.subject }}</strong> - Grade: {{ grade.grade }} (Date: {{ grade.date }})
+        </li>
+        {% else %}
+        <li class="list-group-item">No grades yet.</li>
+        {% endfor %}
+        {% endif %}
+    </ul>
+
     <h3>Teacher Comments</h3>
     <ul class="list-group">
-    {% for comment in teacher_comments %}
+        {% for comment in teacher_comments %}
         <li class="list-group-item">
-            <strong>{{ comment.teacher.username }}</strong> said at {{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}:
+            <strong>{{ comment.teacher.username }}</strong> said at {{ comment.timestamp.strftime('%Y-%m-%d
+            %H:%M:%S') }}:
             <br>
             {{ comment.content }}
         </li>
-    {% else %}
+        {% else %}
         <li class="list-group-item">No comments yet.</li>
-    {% endfor %}
+        {% endfor %}
     </ul>
-  </div>
+</div>
 {% endblock %}

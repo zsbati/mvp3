@@ -1,3 +1,29 @@
-* text=auto eol=lf
+# Handle all text files automatically based on content
+* text=auto
+
+# Enforce LF line endings for specific text file types
 *.py text eol=lf
+*.html text eol=lf
+*.js text eol=lf
+*.css text eol=lf
 *.gitignore text eol=lf
+
+# Enforce LF for shell scripts
+*.sh text eol=lf
+
+# Enforce CRLF for Windows-specific scripts
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Define binary files to prevent Git from modifying them
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.pdf binary
+*.zip binary
+*.exe binary
+*.dll binary
+# Add other binary file extensions as needed
