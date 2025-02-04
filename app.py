@@ -208,11 +208,22 @@ def view_teacher_page(user_id):
         flash("User is not a teacher.", "warning")
         return redirect(url_for('view_teachers'))
 
-    teacher_students_relations = TeacherStudent.query.filter_by(teacher_id=teacher.id).all()
-    accessible_students = [relation.student for relation in teacher_students_relations]
+    # Fetch the teacher's students using TeacherStudent
+    students = User.query.join(TeacherStudent, User.id == TeacherStudent.student_id) \
+        .filter(TeacherStudent.teacher_id == teacher.id) \
+        .all()
 
-    return render_template('teacher_home.html', teacher=teacher, students=accessible_students,
-                           admin_view=True)  # Pass admin_view flag
+    # Fetch the teacher's comments
+    teacher_comments = Comment.query.filter_by(teacher_id=teacher.id).all()
+
+    print(f"Teacher ID: {teacher.id}")
+    print(f"Number of students found: {len(students)}")  # Added debug print for students
+    print(f"Students data: {students}")  # Added debug print for students
+    print(f"Number of comments found: {len(teacher_comments)}")
+    print(f"Comments data: {teacher_comments}")
+
+    return render_template('admin_view_teacher.html', teacher=teacher, students=students,
+                           teacher_comments=teacher_comments)
 
 
 @app.route('/teacher')
@@ -369,6 +380,24 @@ def revoke_access_form():
     students = User.query.filter_by(user_type=UserType.STUDENT).all()
 
     return render_template('revoke_access.html', teachers=teachers, students=students)
+
+
+@app.route('/admin/teachers/<int:teacher_id>')
+@login_required
+def admin_view_teacher(teacher_id):
+    teacher = db.session.get(User, teacher_id)
+    if teacher is None:
+        return "Teacher not found", 404
+
+    students = User.query.join(TeacherStudent, User.id == TeacherStudent.student_id) \
+        .filter(TeacherStudent.teacher_id == teacher_id) \
+        .all()
+
+    teacher_comments = Comment.query.filter_by(teacher_id=teacher_id).all()  # Assuming you still want comments
+
+    # Correctly render the template
+    return render_template('admin_view_teacher.html', teacher=teacher, students=students,
+                           teacher_comments=teacher_comments)
 
 
 @app.route('/add_comment/<int:student_id>', methods=['POST'])
