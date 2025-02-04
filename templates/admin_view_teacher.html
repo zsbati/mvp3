@@ -6,28 +6,33 @@
 <div class="container">
     <h2>Teacher: {{ teacher.username }}</h2>
 
-    <h3>Accessible Students</h3>
-    <ul class="list-group">
-        {% set sorted_students = students | sort(attribute='username') %}
-        {% for student in sorted_students %}
-        <li class="list-group-item">{{ student.username }}</li>
-        {% else %}
-        <li class="list-group-item">No students are accessible to you yet.</li>
-        {% endfor %}
-    </ul>
-
-    <h3>Comments</h3>
-    {% if teacher_comments %}
-    <ul class="list-group">
-        {% for comment in teacher_comments %}
-        <li class="list-group-item">
-            At: {{comment.timestamp}} - Student: {{ comment.student.username }} - Comment: {{ comment.content }}
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No comments found for this teacher.</p>
-    {% endif %}
+    <div class="row">  <!-- Added a row for better layout -->
+        <div class="col-md-6">  <!-- Column for Accessible Students -->
+            <h3>Accessible Students</h3>
+            <ul class="list-group">
+                {% set sorted_students = students | sort(attribute='username') %}
+                {% for student in sorted_students %}
+                    <li class="list-group-item">{{ student.username }}</li>
+                {% else %}
+                    <li class="list-group-item">No students are accessible to you yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6">  <!-- Column for Comments -->
+            <h3>Comments</h3>
+            {% if teacher_comments %}
+                <ul class="list-group">
+                    {% for comment in teacher_comments %}
+                        <li class="list-group-item">
+                            At: {{ comment.timestamp }} - Student: {{ comment.student.username }} - Comment: {{ comment.content }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No comments found for this teacher.</p>
+            {% endif %}
+        </div>
+    </div> <!-- End of row -->
 
     <a href="{{ url_for('view_teachers') }}" class="btn btn-secondary mt-3">Back to Teachers List</a>
 </div>
