@@ -60,3 +60,19 @@ class Comment(db.Model):
 
     teacher = db.relationship('User', foreign_keys=[teacher_id])
     student = db.relationship('User', foreign_keys=[student_id])
+
+
+class Grade(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    date = db.Column(db.String(20), nullable=False)  # e.g., "2023-11-15"
+    subject = db.Column(db.String(100), nullable=False)
+    grade = db.Column(db.String(10), nullable=False)  # e.g., "A", "B+", "90/100"
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Relationship to the student
+    student = db.relationship(
+        'User',
+        foreign_keys=[student_id],
+        backref=db.backref('grades', cascade='all, delete-orphan')
+    )

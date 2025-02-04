@@ -12,7 +12,7 @@ from flask_login import (
     login_required,
     current_user
 )
-from models import db, User, UserType, TeacherStudent, Comment
+from models import db, User, UserType, TeacherStudent, Comment, Grade
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 

@@ -1,0 +1,28 @@
+# Python virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store  # Mac
+Thumbs.db  # Windows
+
+# Logs
+*.log
+
+# Other common ignores
+*.bak
+*.swp
