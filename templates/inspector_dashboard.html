@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mt-5">Inspector Dashboard</h1>
+</div>
+
+
+<!-- Users Table -->
+<div>
+    <section>
+        <h3>Users</h3>
+        <ul>
+            {% set grouped_users = users | sort(attribute='username') | groupby('user_type.value') %}
+
+            {% for group in grouped_users %}
+            {% if group.grouper == 'ADMINISTRATOR' %}
+
+            <h3>Administrators</h3>
+            {% elif group.grouper == 'TEACHER' %}
+            <h3>Teachers</h3>
+            {% elif group.grouper == 'STUDENT' %}
+            <h3>Students</h3>
+            {% endif %}
+
+            {% for user in group.list %}
+            <li>
+                {{ user.username }} ({{ user.user_type.value }})
+            </li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+    </section>
+</div>
+
+{% endblock %}

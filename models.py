@@ -13,6 +13,7 @@ class UserType(enum.Enum):
     ADMIN = 'ADMIN'
     TEACHER = 'TEACHER'
     STUDENT = 'STUDENT'
+    INSPECTOR = 'INSPECTOR'
 
 
 class User(db.Model, UserMixin):
@@ -31,6 +32,26 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def is_admin(self):
+        return self.user_type == UserType.ADMIN
+
+    def is_inspector(self):
+        return self.user_type == UserType.INSPECTOR
+
+    def is_teacher(self):
+        return self.user_type == UserType.TEACHER
+
+    def is_student(self):
+        return self.user_type == UserType.STUDENT
+
+    # Add this method to check if user has edit privileges
+    def has_edit_privileges(self):
+        return self.user_type == UserType.ADMIN  # Only admins can edit
+
+    # Add this method to check if user has view privileges
+    def has_view_privileges(self):
+        return self.user_type in [UserType.ADMIN, UserType.INSPECTOR]
 
 
 class TeacherStudent(db.Model):

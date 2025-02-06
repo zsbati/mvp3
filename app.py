@@ -65,6 +65,8 @@ def login():
             login_user(user)
             if user.user_type == UserType.ADMIN:
                 return redirect(url_for('admin_home'))
+            if user.user_type == UserType.INSPECTOR:
+                return redirect(url_for('inspector_dashboard'))  # Create this route
             elif user.user_type == UserType.TEACHER:
                 return redirect(url_for('teacher_home'))
             elif user.user_type == UserType.STUDENT:
@@ -475,6 +477,35 @@ def add_grade():
 
     flash("Grade added successfully.", "success")
     return redirect(url_for('admin_home'))
+
+
+@app.route('/admin/edit_user/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def edit_user(user_id):
+    if not current_user.has_edit_privileges():
+        flash('You do not have permission to edit users.')
+        return redirect(url_for('index'))
+    # ... rest of the edit logic ...
+
+
+@app.route('/admin/view_users')
+@login_required
+def view_users():
+    if not current_user.has_view_privileges():
+        flash('You do not have permission to view this page.')
+        return redirect(url_for('index'))
+
+
+@app.route('/inspector/dashboard')
+@login_required
+def inspector_dashboard():
+    if not current_user.is_inspector():
+        flash('Access denied')
+        return redirect(url_for('index'))
+
+    users = User.query.all()
+    grades = Grade.query.all()
+    return render_template('inspector_dashboard.html', users=users, grades=grades)
 
 
 if __name__ == '__main__':
