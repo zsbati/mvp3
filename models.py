@@ -27,6 +27,10 @@ class User(db.Model, UserMixin):
         self.username = username
         self.user_type = user_type
 
+    @property
+    def is_authenticated(self):
+        return True
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
