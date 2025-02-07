@@ -1,0 +1,51 @@
+<!-- templates/view_student_page.html -->
+{% extends "base.html" %}
+
+{% block title %}Student Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Student Details</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ student.username }}</h5>
+            <p class="card-text">User ID: {{ student.id }}</p>
+            <p class="card-text">User Type: {{ student.user_type.name }}</p>
+            <!-- Add more fields as necessary -->
+        </div>
+    </div>
+    <!-- Grades Section -->
+    <h3>Grades</h3>
+    {% if grades %}
+    <ul class="list-group">
+        {% for grade in grades %}
+        <li class="list-group-item">
+            <strong>Subject:</strong> {{ grade.subject }} |
+            <strong>Grade:</strong> {{ grade.grade }} |
+            <strong>Date:</strong> {{ grade.date }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No grades available.</p>
+    {% endif %}
+
+    <!-- Comments Section -->
+    <h3>Comments</h3>
+    {% if comments %}
+    <ul class="list-group">
+        {% for comment in comments %}
+        <li class="list-group-item">
+            <strong>From:</strong> {{ comment.teacher.username }} |
+            <strong>Comment:</strong> {{ comment.content }} |
+            <strong>Timestamp:</strong> {{ comment.timestamp }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No comments available.</p>
+    {% endif %}
+
+    <a href="{{ url_for('inspector_students') }}" class="btn btn-secondary mt-3">Back to Student List</a>
+</div>
+{% endblock %}

@@ -1,25 +1,21 @@
-<!--templates/inspector_students.html -->
+<!-- templates/inspector_students.html -->
 {% extends "base.html" %}
 {% block content %}
 <div class="container">
-<h1>Student Accounts</h1>
-<table>
-    <thead>
-        <tr>
-
-            <th>username</th>
-
-        </tr>
-    </thead>
-    <tbody>
-        {% for student in students %}
-        <tr>
-
-            <td>{{ student.username }}</td>
-
-        </tr>
+    <h1>Student Accounts</h1>
+    <ul class="list-group">
+        {% set sorted_students = students | sort(attribute='username') %}
+        {% for student in sorted_students %}
+        <li class="list-group-item">
+            {{ student.username }}
+            <a href="{{ url_for('view_student_account', user_id=student.id) }}" class="btn btn-sm btn-primary float-end">View
+                Page</a>
+        </li>
         {% endfor %}
-    </tbody>
-</table>
-    {% endblock %}
+    </ul>
+    {% if not students %}
+    <p>No student accounts found.</p>
+    {% endif %}
+    <a href="{{ url_for('admin_home') }}" class="btn btn-secondary mt-3">Back to Admin Home</a>
 </div>
+{% endblock %}
