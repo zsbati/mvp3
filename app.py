@@ -507,6 +507,15 @@ def inspector_dashboard():
     grades = Grade.query.all()
     return render_template('inspector_dashboard.html', users=users, grades=grades)
 
+@app.route('/inspectors/students')
+def inspector_students():
+    # Ensure the user is an inspector
+    if not current_user.is_inspector and not current_user.is_admin():
+        return "Access Denied", 403
+
+    # Query the User model to get students
+    students = User.query.filter_by(user_type=UserType.STUDENT).all()
+    return render_template('inspector_students.html', students=students)
 
 if __name__ == '__main__':
     app.run(debug=True)

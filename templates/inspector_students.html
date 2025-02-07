@@ -1,0 +1,25 @@
+<!--templates/inspector_students.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+<h1>Student Accounts</h1>
+<table>
+    <thead>
+        <tr>
+
+            <th>username</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in students %}
+        <tr>
+
+            <td>{{ student.username }}</td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    {% endblock %}
+</div>
