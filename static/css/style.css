@@ -98,3 +98,9 @@ body {
     background-color: #2196F3; /* Blue */
     border: 1px solid #1976D2;
 }
+
+.container .card {
+    display: block !important;
+    float: none !important;
+    width: 100% !important;
+}

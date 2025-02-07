@@ -4,48 +4,58 @@
 {% block title %}Student Details{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Student Details</h2>
-    <div class="card">
+<div class="teacher_student_container">
+    <!-- Student Details Section -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Student Details</h5>
+        </div>
         <div class="card-body">
-            <h5 class="card-title">{{ student.username }}</h5>
-            <p class="card-text">User ID: {{ student.id }}</p>
-            <p class="card-text">User Type: {{ student.user_type.name }}</p>
-            <!-- Add more fields as necessary -->
+            <p class="card-text"><strong>Username:</strong> {{ student.username }}</p>
         </div>
     </div>
+
     <!-- Grades Section -->
-    <h3>Grades</h3>
-    {% if grades %}
-    <ul class="list-group">
-        {% for grade in grades %}
-        <li class="list-group-item">
-            <strong>Subject:</strong> {{ grade.subject }} |
-            <strong>Grade:</strong> {{ grade.grade }} |
-            <strong>Date:</strong> {{ grade.date }}
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No grades available.</p>
-    {% endif %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Grades</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% if grades %}
+                {% for grade in grades %}
+                <li class="list-group-item">
+                    <strong>Subject:</strong> {{ grade.subject }} |
+                    <strong>Grade:</strong> {{ grade.grade }} |
+                    <strong>Date:</strong> {{ grade.date }}
+                </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item">No grades available.</li>
+            {% endif %}
+        </ul>
+    </div>
 
     <!-- Comments Section -->
-    <h3>Comments</h3>
-    {% if comments %}
-    <ul class="list-group">
-        {% for comment in comments %}
-        <li class="list-group-item">
-            <strong>From:</strong> {{ comment.teacher.username }} |
-            <strong>Comment:</strong> {{ comment.content }} |
-            <strong>Timestamp:</strong> {{ comment.timestamp }}
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No comments available.</p>
-    {% endif %}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Comments</h5>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% if comments %}
+                {% for comment in comments %}
+                <li class="list-group-item">
+                    <strong>From:</strong> {{ comment.teacher.username }}<br>
+                    <strong>Comment:</strong> {{ comment.content }}<br>
+                    <strong>Timestamp:</strong> {{ comment.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                </li>
+                {% endfor %}
+            {% else %}
+                <li class="list-group-item">No comments available.</li>
+            {% endif %}
+        </ul>
+    </div>
 
+    <!-- Back Button -->
     <a href="{{ url_for('inspector_students') }}" class="btn btn-secondary mt-3">Back to Student List</a>
 </div>
 {% endblock %}
