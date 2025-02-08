@@ -10,6 +10,7 @@
 <div>
     {% if current_user.is_inspector %}
     <a href="{{ url_for('inspector_students') }}">View All Students</a>
+    <a href="{{ url_for('view_teachers') }}" class="btn btn-primary">View Teacher Accounts</a>
     {% endif %}
 </div>
 

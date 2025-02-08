@@ -120,6 +120,24 @@ def admin_required(f):
 
     return decorated_function
 
+def admin_or_inspector_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            print("admin_or_inspector_required: User is not authenticated")  # Logging
+            flash('You must be logged in to access this page.', 'danger')
+            return redirect(url_for('login'))
+        elif current_user.user_type not in [UserType.ADMIN, UserType.INSPECTOR]:
+            print(
+                f"admin_or_inspector_required: User is logged in, but user_type is {current_user.user_type}, not ADMIN or INSPECTOR"
+            )  # Logging
+            flash('You are not authorized to access this page.', 'danger')
+            return redirect(url_for('home'))
+        else:
+            print("admin_or_inspector_required: User is an ADMIN or INSPECTOR. Proceeding to view function.")  # Logging
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 @app.route('/admin')
 @login_required
@@ -145,7 +163,7 @@ def view_students():
 
 @app.route('/admin/view_teachers')
 @login_required
-@admin_required
+@admin_or_inspector_required
 def view_teachers():
     teachers = User.query.filter_by(user_type=UserType.TEACHER).all()  # Query User, filter by user_type
     return render_template('view_teachers.html', teachers=teachers)
@@ -203,7 +221,7 @@ def view_student_page(user_id):
 
 @app.route('/admin/view_teacher_page/<int:user_id>')
 @login_required
-@admin_required
+@admin_or_inspector_required
 def view_teacher_page(user_id):
     teacher = User.query.get_or_404(user_id)
     if teacher.user_type != UserType.TEACHER:
