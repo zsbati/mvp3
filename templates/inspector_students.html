@@ -8,7 +8,8 @@
         {% for student in sorted_students %}
         <li class="list-group-item">
             {{ student.username }}
-            <a href="{{ url_for('view_student_account', user_id=student.id) }}" class="btn btn-sm btn-primary float-end">View
+            <a href="{{ url_for('view_student_account', user_id=student.id) }}"
+               class="btn btn-sm btn-primary float-end">View
                 Page</a>
         </li>
         {% endfor %}

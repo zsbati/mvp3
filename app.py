@@ -120,6 +120,7 @@ def admin_required(f):
 
     return decorated_function
 
+
 def admin_or_inspector_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -138,6 +139,7 @@ def admin_or_inspector_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
 
 @app.route('/admin')
 @login_required

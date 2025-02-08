@@ -12,24 +12,25 @@
             <ul class="list-group">
                 {% set sorted_students = students | sort(attribute='username') %}
                 {% for student in sorted_students %}
-                    <li class="list-group-item">{{ student.username }}</li>
+                <li class="list-group-item">{{ student.username }}</li>
                 {% else %}
-                    <li class="list-group-item">No students are accessible to you yet.</li>
+                <li class="list-group-item">No students are accessible to you yet.</li>
                 {% endfor %}
             </ul>
         </div>
         <div class="col-md-6">  <!-- Column for Comments -->
             <h3>Comments</h3>
             {% if teacher_comments %}
-                <ul class="list-group">
-                    {% for comment in teacher_comments %}
-                        <li class="list-group-item">
-                            At: {{ comment.timestamp }} - Student: {{ comment.student.username }} - Comment: {{ comment.content }}
-                        </li>
-                    {% endfor %}
-                </ul>
+            <ul class="list-group">
+                {% for comment in teacher_comments %}
+                <li class="list-group-item">
+                    At: {{ comment.timestamp }} - Student: {{ comment.student.username }} - Comment: {{ comment.content
+                    }}
+                </li>
+                {% endfor %}
+            </ul>
             {% else %}
-                <p>No comments found for this teacher.</p>
+            <p>No comments found for this teacher.</p>
             {% endif %}
         </div>
     </div> <!-- End of row -->
