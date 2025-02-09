@@ -238,11 +238,11 @@ def view_teacher_page(user_id):
     # Fetch the teacher's comments
     teacher_comments = Comment.query.filter_by(teacher_id=teacher.id).all()
 
-    print(f"Teacher ID: {teacher.id}")
+    '''print(f"Teacher ID: {teacher.id}")
     print(f"Number of students found: {len(students)}")  # Added debug print for students
     print(f"Students data: {students}")  # Added debug print for students
     print(f"Number of comments found: {len(teacher_comments)}")
-    print(f"Comments data: {teacher_comments}")
+    print(f"Comments data: {teacher_comments}")'''
 
     return render_template('admin_view_teacher.html', teacher=teacher, students=students,
                            teacher_comments=teacher_comments)
@@ -458,7 +458,7 @@ def my_comments():
     if current_user.user_type != UserType.TEACHER:
         return 'Unauthorized, if you are administrator or inspector, please see the specific students\' page.', 403
     comments = Comment.query.filter_by(teacher_id=current_user.id).all()
-    print(comments)
+    # print(comments)
     return render_template('my_comments.html', comments=comments)
 
 

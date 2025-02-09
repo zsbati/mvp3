@@ -1,6 +1,6 @@
 I. Quick Summary
 
-This is a Python application built using Flask that manages three types of user accounts—Administrator, Teacher, and Student/Parent—enabling permissions, comment-posting, and account maintenance.
+This is a Python application built using Flask that manages four types of user accounts — Administrator, Inspector, Teacher, and Student/Parent—enabling permissions, comment-posting, and account maintenance.
 
 
 II. Motivation
@@ -12,9 +12,9 @@ The motivation for developing this application is to provide a secure and organi
 
 
 III. User Accounts and Password Management:
-1) All users (students, teachers, and the administrator) can change their passwords.
+1) All users (students, teachers, and the administrator, inspectors) can change their passwords.
 2) The administrator can create and delete student and teacher accounts, and change their passwords.
-
+3) The inspector can see everything but has no editing rights (except own password)
 
 IV. Role-Specific Features:
 
@@ -29,7 +29,7 @@ Administrator
 Teacher
 
 1) Post comments on assigned student accounts (only to those allowed by the administrator). One teacher cannot see other teachers’ comments.
-Viewing Comments: allowed only to the administrator and the respective students' parents.
+Viewing Comments: allowed only to the administrator(s), inspector(s) and the respective students' parents.
 
 
 
