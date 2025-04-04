@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     {% block head %}{% endblock %}  <!-- Allows adding specific head elements to child templates -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 </head>
 <body style="background-image: url('{{ url_for('static', filename='img/background.jpg') }}'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
 <div id="header">
@@ -43,8 +44,12 @@
     {% block content %}{% endblock %}
 </div>
 
-<div id="footer">
+<footer>
     <p>&copy; 2025 My MVP Application</p>
-</div>
+    <p>
+        Icons made by <a href="https://www.flaticon.com/free-icons/graduation-cap" title="graduation cap icons">Hilmy
+        Abiyyu A.</a> from <a href="https://www.flaticon.com/" title="Flaticon">Flaticon</a>.
+    </p>
+</footer>
 </body>
 </html>

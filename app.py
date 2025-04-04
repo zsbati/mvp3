@@ -1,4 +1,5 @@
 # app.py
+import os
 from functools import wraps
 
 from sqlalchemy import event, text
@@ -18,7 +19,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
 
 db.init_app(app)
 
