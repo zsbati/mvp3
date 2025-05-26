@@ -26,6 +26,7 @@ def create_app():
     app = Flask(__name__)
     
     # Load configuration from environment variables
+    # Security settings - these must be explicitly set in environment
     app.config.update(
         SECRET_KEY=os.environ.get('SECRET_KEY', 'dev-key-for-testing-only'),
         SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL', 'sqlite:///app.db'),
