@@ -85,11 +85,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-teacher_access = db.Table('teacher_access',
-                          db.Column('teacher_id', db.Integer, db.ForeignKey('teacher.id'), primary_key=True),
-                          db.Column('student_id', db.Integer, db.ForeignKey('student.id'), primary_key=True)
-                          )
-
 
 @login_manager.user_loader
 def load_user(user_id):
