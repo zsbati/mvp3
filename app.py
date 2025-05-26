@@ -31,8 +31,8 @@ def create_app():
         SECRET_KEY=os.environ.get('SECRET_KEY', 'dev-key-for-testing-only'),
         SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL', 'sqlite:///app.db'),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        DEBUG=os.environ.get('FLASK_DEBUG', 'True').lower() in ('true', '1', 't'),
-        LOG_LEVEL=os.environ.get('LOG_LEVEL', 'DEBUG')
+        DEBUG=os.environ.get('FLASK_DEBUG', 'False').lower() in ('true', '1', 't'),
+        LOG_LEVEL=os.environ.get('LOG_LEVEL', 'INFO')
     )
     
     # Initialize extensions
@@ -149,16 +149,15 @@ def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated:
-            print("admin_required: User is not authenticated")  # Add logging
+            app.logger.warning("User is not authenticated")
             flash('You must be logged in to access this page.', 'danger')  # More general flash message
             return redirect(url_for('login'))
         elif current_user.user_type != UserType.ADMIN:  # Use elif instead of separate if
-            print(
-                f"admin_required: User is logged in, but user_type is {current_user.user_type}, not ADMIN")  # Add logging
+            app.logger.warning(f"User is logged in, but user_type is {current_user.user_type}, not ADMIN")
             flash('You are not authorized to access this page.', 'danger')  # More appropriate flash message
             return redirect(url_for('home'))  # Or another appropriate page
         else:
-            print("admin_required: User is an ADMIN. Proceeding to view function.")  # Add logging
+            app.logger.info("User is an ADMIN. Proceeding to view function.")
         return f(*args, **kwargs)
 
     return decorated_function
@@ -168,7 +167,7 @@ def admin_or_inspector_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated:
-            print("admin_or_inspector_required: User is not authenticated")  # Logging
+            app.logger.warning("User is not authenticated")
             flash('You must be logged in to access this page.', 'danger')
             return redirect(url_for('login'))
         elif current_user.user_type not in [UserType.ADMIN, UserType.INSPECTOR]:
@@ -178,7 +177,7 @@ def admin_or_inspector_required(f):
             flash('You are not authorized to access this page.', 'danger')
             return redirect(url_for('home'))
         else:
-            print("admin_or_inspector_required: User is an ADMIN or INSPECTOR. Proceeding to view function.")  # Logging
+            app.logger.info("User is an ADMIN or INSPECTOR. Proceeding to view function.")
         return f(*args, **kwargs)
 
     return decorated_function
@@ -187,7 +186,7 @@ def admin_or_inspector_required(f):
 @app.route('/admin')
 @login_required
 def admin_home():
-    print(f"Current user type: {current_user.user_type}")  # Temporary check
+    app.logger.info(f"Current user type: {current_user.user_type}")
 
     if current_user.user_type != UserType.ADMIN:
         return 'Unauthorized', 403
@@ -281,11 +280,10 @@ def view_teacher_page(user_id):
     # Fetch the teacher's comments
     teacher_comments = Comment.query.filter_by(teacher_id=teacher.id).all()
 
-    '''print(f"Teacher ID: {teacher.id}")
-    print(f"Number of students found: {len(students)}")  # Added debug print for students
-    print(f"Students data: {students}")  # Added debug print for students
-    print(f"Number of comments found: {len(teacher_comments)}")
-    print(f"Comments data: {teacher_comments}")'''
+    app.logger.debug(f"Number of students found: {len(students)}")
+    app.logger.debug(f"Students data: {students}")
+    app.logger.debug(f"Number of comments found: {len(teacher_comments)}")
+    app.logger.debug(f"Comments data: {teacher_comments}")
 
     return render_template('admin_view_teacher.html', teacher=teacher, students=students,
                            teacher_comments=teacher_comments)
@@ -501,7 +499,7 @@ def my_comments():
     if current_user.user_type != UserType.TEACHER:
         return 'Unauthorized, if you are administrator or inspector, please see the specific students\' page.', 403
     comments = Comment.query.filter_by(teacher_id=current_user.id).all()
-    # print(comments)
+    app.logger.debug(f"Comments: {comments}")
     return render_template('my_comments.html', comments=comments)
 
 

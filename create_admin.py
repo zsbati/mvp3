@@ -24,7 +24,7 @@ def create_admin_user(username=None, password=None, interactive=True):
     with app.app_context():
         # Check if user already exists
         if username and User.query.filter_by(username=username).first():
-            print(f"Error: User '{username}' already exists!")
+            app.logger.error(f"Error: User '{username}' already exists!")
             return False
             
         # Get username if not provided
@@ -32,10 +32,10 @@ def create_admin_user(username=None, password=None, interactive=True):
             while True:
                 username = input("Enter admin username: ").strip()
                 if not username:
-                    print("Username cannot be empty!")
+                    app.logger.error("Username cannot be empty!")
                     continue
                 if User.query.filter_by(username=username).first():
-                    print(f"User '{username}' already exists!")
+                    app.logger.error(f"User '{username}' already exists!")
                     continue
                 break
         
@@ -44,17 +44,17 @@ def create_admin_user(username=None, password=None, interactive=True):
             while True:
                 password = getpass.getpass("Enter admin password: ").strip()
                 if not password:
-                    print("Password cannot be empty!")
+                    app.logger.error("Password cannot be empty!")
                     continue
                 password_confirm = getpass.getpass("Confirm password: ").strip()
                 if password != password_confirm:
-                    print("Passwords do not match!")
+                    app.logger.error("Passwords do not match!")
                     continue
                 break
         
         # Validate we have what we need
         if not username or not password:
-            print("Error: Username and password are required!")
+            app.logger.error("Error: Username and password are required!")
             return False
         
         try:
@@ -69,13 +69,13 @@ def create_admin_user(username=None, password=None, interactive=True):
             db.session.commit()
             
             if interactive:
-                print(f"\nAdmin user '{username}' created successfully!")
-                print("IMPORTANT: Keep these credentials secure!")
+                app.logger.info(f"Admin user '{username}' created successfully!")
+                app.logger.info("IMPORTANT: Keep these credentials secure!")
             return True
             
         except Exception as e:
             db.session.rollback()
-            print(f"Error creating admin user: {e}")
+            app.logger.error(f"Error creating admin user: {e}")
             return False
 
 if __name__ == "__main__":
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     
     # Run interactively if no args provided
     if not username or not password:
-        print("=== Create Admin User ===")
+        app.logger.info("=== Create Admin User ===")
     
     success = create_admin_user(username, password)
     sys.exit(0 if success else 1)
