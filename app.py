@@ -1,11 +1,13 @@
 # app.py
 import os
+import logging
 from functools import wraps
+from logging.handlers import RotatingFileHandler
+from dotenv import load_dotenv
 
 from sqlalchemy import event, text
 from sqlalchemy.engine import Engine
-
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import (
     LoginManager,
     login_user,
@@ -17,11 +19,55 @@ from models import db, User, UserType, TeacherStudent, Comment, Grade
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
+# Load environment variables from .env file
+load_dotenv()
 
-db.init_app(app)
+def create_app():
+    app = Flask(__name__)
+    
+    # Load configuration from environment variables
+    app.config.update(
+        SECRET_KEY=os.environ.get('SECRET_KEY', 'dev-key-for-testing-only'),
+        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL', 'sqlite:///app.db'),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+        DEBUG=os.environ.get('FLASK_DEBUG', 'True').lower() in ('true', '1', 't'),
+        LOG_LEVEL=os.environ.get('LOG_LEVEL', 'DEBUG')
+    )
+    
+    # Initialize extensions
+    db.init_app(app)
+    
+    # Initialize login manager
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = 'login'
+    login_manager.login_message = 'Please log in to access this page.'
+    login_manager.login_message_category = 'info'
+    
+    # Configure logging
+    if not app.debug:
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=10)
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        ))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('Application startup')
+    
+    # Import and register blueprints here if you have any
+    # from .blueprint import bp as bp
+    # app.register_blueprint(bp)
+    
+    # Create database tables
+    with app.app_context():
+        db.create_all()
+    
+    return app
+
+app = create_app()
 
 # Enable foreign key constraints for SQLite using event listener
 with app.app_context():
@@ -557,5 +603,21 @@ def view_student_account(user_id):
     return render_template('view_student_page.html', student=student, grades=grades, comments=comments)
 
 
+# Error handlers
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('errors/404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('errors/500.html'), 500
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Create logs directory if it doesn't exist
+    if not os.path.exists('logs'):
+        os.mkdir('logs')
+    
+    # Run the app
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=app.config['DEBUG'])
