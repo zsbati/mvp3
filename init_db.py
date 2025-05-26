@@ -5,9 +5,14 @@ from app import app, db
 from models import User, UserType
 
 def check_database_exists():
-    """Check if the database file exists"""
-    db_path = os.path.join(os.path.dirname(__file__), 'instance', 'site.db')
-    return os.path.exists(db_path)
+    """Check if the database exists"""
+    # For PythonAnywhere, we don't need to check file existence
+    # Just check if we can connect to the database
+    try:
+        db.engine.connect()
+        return True
+    except:
+        return False
 
 def check_migrations_needed():
     """Check if there are any pending migrations"""
