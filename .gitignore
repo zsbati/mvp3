@@ -49,6 +49,9 @@ instance/
 
 # OS specific
 .DS_Store
+
+# Development scripts
+/scripts/
 .DS_Store?
 ._*
 .Spotlight-V100
