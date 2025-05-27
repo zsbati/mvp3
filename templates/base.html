@@ -1,4 +1,5 @@
 <!-- templates/base.html -->
+{#- This is a Jinja2 template -#}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +11,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     {% block head %}{% endblock %}  <!-- Allows adding specific head elements to child templates -->
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <!-- Favicons -->
+    <link rel="icon" href="{{ url_for('static', filename='graduation.ico') }}?v=3" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='graduation.ico') }}?v=3">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='graduation.ico') }}?v=3">
 </head>
 <body style="background-image: url('{{ url_for('static', filename='img/background.jpg') }}'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
 <div id="header">
