@@ -70,17 +70,10 @@ def create_app():
 
 app = create_app()
 
-# Explicitly set static folder
-app.static_folder = 'static'
-app.static_url_path = '/static'
-
 @app.route('/favicon.ico')
 def favicon():
-    return send_from_directory(
-        os.path.join(app.root_path, 'static'),
-        'graduation.ico',
-        mimetype='image/x-icon'
-    )
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                             'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 # Enable foreign key constraints for SQLite using event listener
 with app.app_context():

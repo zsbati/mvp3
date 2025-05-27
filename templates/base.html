@@ -1,5 +1,6 @@
 <!-- templates/base.html -->
-{#- This is a Jinja2 template -#}
+{#- template-language: Jinja2 -#}
+{#- template-extends: html -#}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,14 +9,20 @@
     <title>{% block title %}MVP3 - Default Title{% endblock %}</title>
 
     <!-- Static Files (CSS, Images, etc.) -->
+    {#- no-lint -#}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     {% block head %}{% endblock %}  <!-- Allows adding specific head elements to child templates -->
     <!-- Favicon -->
+    {#- no-lint -#}
     <link rel="icon" href="/static/graduation.ico?v=4" type="image/x-icon">
 </head>
-<body style="background-image: url('{{ url_for('static', filename='img/background.jpg') }}'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
-<div id="header">
+<body style="background-image: url('{{ url_for('static', filename='img/background.jpg') }}');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;"
+    {#- no-lint -#}>
+<div class="header-container">
     <a href="/">
         <picture>
             <source srcset="{{ url_for('static', filename='img/logo.avif') }}" type="image/avif">

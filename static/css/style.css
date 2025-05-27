@@ -2,10 +2,26 @@ body {
     font-family: sans-serif;
     margin: 0;
     padding: 0;
-    color: white; /* Set default text color to white */
-    background-image: url('static/img/background.jpg'); /* Replace with your image path */
-    background-size: cover; /* Ensure the image covers the entire body */
-    background-position: center; /* Center the image */
+    color: white;
+}
+
+.background {
+    background-image: url('../img/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    position: relative;
+}
+
+.header-container {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
 }
 
 .header-container {

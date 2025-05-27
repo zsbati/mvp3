@@ -35,12 +35,8 @@ def init_db():
         
         # Check if migrations are needed
         if check_migrations_needed():
-
-            # In a real app, you would run:
-            # flask db upgrade
-            # For now, we'll just recreate the tables
-            db.drop_all()
-            db.create_all()
+            app.logger.warning("Database schema needs updating. Please run migrations manually.")
+            return False  # Return False to indicate schema needs updating
 
         
         # Check if admin exists
@@ -55,13 +51,12 @@ def init_db():
                 create_admin_user()
             except ImportError as e:
                 app.logger.error(f"Error: Could not import create_admin: {e}")
-
                 return False
-        else:
-
-        
-
-        return True
+            
+            # Create admin user if no users exist
+            pass  # Admin user already created in the try block
+                
+    return True
 
 if __name__ == "__main__":
     if init_db():
