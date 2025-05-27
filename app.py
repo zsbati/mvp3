@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from sqlalchemy import event, text
 from sqlalchemy.engine import Engine
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory
 from flask_login import (
     LoginManager,
     login_user,
@@ -69,6 +69,11 @@ def create_app():
     return app
 
 app = create_app()
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                             'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 # Enable foreign key constraints for SQLite using event listener
 with app.app_context():
@@ -606,6 +611,11 @@ def not_found_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('errors/500.html'), 500
+
+# Serve static files in production
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
 
 if __name__ == '__main__':
     # Create logs directory if it doesn't exist
