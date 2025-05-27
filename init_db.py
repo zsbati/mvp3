@@ -29,7 +29,7 @@ def init_db():
     with app.app_context():
         # Check if database exists
         if not check_database_exists():
-
+            app.logger.warning("Creating database tables for the first time. This will only happen once.")
             db.create_all()
 
         
