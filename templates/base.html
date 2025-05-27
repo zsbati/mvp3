@@ -11,10 +11,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
     {% block head %}{% endblock %}  <!-- Allows adding specific head elements to child templates -->
-    <!-- Favicons -->
-    <link rel="icon" href="{{ url_for('static', filename='graduation.ico') }}?v=3" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='graduation.ico') }}?v=3">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='graduation.ico') }}?v=3">
+    <!-- Favicon -->
+    <link rel="icon" href="/static/graduation.ico?v=4" type="image/x-icon">
 </head>
 <body style="background-image: url('{{ url_for('static', filename='img/background.jpg') }}'); background-size: cover; background-repeat: no-repeat; background-attachment: fixed;">
 <div id="header">
