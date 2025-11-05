@@ -2,68 +2,60 @@
 import os
 import logging
 from functools import wraps
-from logging.handlers import RotatingFileHandler
+from datetime import datetime, timedelta
+from flask import Flask, render_template, redirect, url_for, flash, request, session, abort, send_from_directory
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.middleware.proxy_fix import ProxyFix
+from enum import Enum
 from dotenv import load_dotenv
-
 from sqlalchemy import event, text
 from sqlalchemy.engine import Engine
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory
-from flask_login import (
-    LoginManager,
-    login_user,
-    logout_user,
-    login_required,
-    current_user
-)
-from models import db, User, UserType, TeacherStudent, Comment, Grade
-from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from logging.handlers import RotatingFileHandler
 
-# Load environment variables from .env file
-load_dotenv()
+# Import configuration
+try:
+    from config_prod import ProductionConfig as Config
+except ImportError:
+    from config import Config
 
-def create_app():
+db = SQLAlchemy()
+login_manager = LoginManager()
+
+def create_app(config_class=Config):
     app = Flask(__name__)
     
-    # Load configuration from environment variables
-    # Security settings - these must be explicitly set in environment
-    app.config.update(
-        SECRET_KEY=os.environ.get('SECRET_KEY', 'dev-key-for-testing-only'),
-        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL', 'sqlite:///app.db'),
-        SQLALCHEMY_TRACK_MODIFICATIONS=False,
-        DEBUG=os.environ.get('FLASK_DEBUG', 'False').lower() in ('true', '1', 't'),
-        LOG_LEVEL=os.environ.get('LOG_LEVEL', 'INFO')
-    )
+    # Apply configuration
+    app.config.from_object(config_class)
+    
+    # Handle proxy headers if behind a reverse proxy
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
     
     # Initialize extensions
     db.init_app(app)
-    
-    # Initialize login manager
-    login_manager = LoginManager()
     login_manager.init_app(app)
     login_manager.login_view = 'login'
     login_manager.login_message = 'Please log in to access this page.'
     login_manager.login_message_category = 'info'
     
-    # Configure logging
-    if not app.debug:
+    return app
+
+def setup_logging(app):
+    """Configure logging for the application."""
+    if not app.debug and not app.testing:
+        # Ensure log directory exists
         if not os.path.exists('logs'):
             os.mkdir('logs')
+        
+        # File handler for errors
         file_handler = RotatingFileHandler('logs/app.log', maxBytes=10240, backupCount=10)
         file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        ))
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
         file_handler.setLevel(logging.INFO)
         app.logger.addHandler(file_handler)
         app.logger.setLevel(logging.INFO)
         app.logger.info('Application startup')
-    
-    # Import and register blueprints here if you have any
-    # from .blueprint import bp as bp
-    # app.register_blueprint(bp)
-    
-    # Create database tables
-    with app.app_context():
         db.create_all()
     
     return app
