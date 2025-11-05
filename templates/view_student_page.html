@@ -46,7 +46,7 @@
                 <li class="list-group-item">
                     <strong>From:</strong> {{ comment.teacher.username }}<br>
                     <strong>Comment:</strong> {{ comment.content }}<br>
-                    <strong>Timestamp:</strong> {{ comment.timestamp.strftime('%Y-%m-%d %H:%M') }}
+                    <strong>Data/Hora:</strong> {{ comment.timestamp.replace(microsecond=0).strftime('%d/%m/%Y %H:%M:%S') }}
                 </li>
                 {% endfor %}
             {% else %}

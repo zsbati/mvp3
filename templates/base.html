@@ -34,8 +34,8 @@
 
     <div class="user-options">
         {% if current_user.is_authenticated %}
-        <a href="{{ url_for('logout') }}">Logout</a>
-        <a href="{{ url_for('change_password') }}">Change password</a>
+        <a href="{{ url_for('logout') }}">Sair</a>
+        <a href="{{ url_for('change_password') }}">Mudar senha</a>
         {% endif %}
     </div>
 </div>

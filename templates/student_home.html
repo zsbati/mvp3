@@ -42,8 +42,7 @@
     <ul class="list-group">
         {% for comment in teacher_comments %}
         <li class="list-group-item">
-            <strong>{{ comment.teacher.username }}</strong> said at {{ comment.timestamp.strftime('%Y-%m-%d
-            %H:%M:%S') }}:
+            <strong>{{ comment.teacher.username }}</strong> disse em {{ comment.timestamp.replace(microsecond=0).strftime('%d/%m/%Y %H:%M:%S') }}:
             <br>
             {{ comment.content }}
         </li>
