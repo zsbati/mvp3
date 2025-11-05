@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="teacher_student_container">
-    <h2>Student Home</h2>
+    <h2>Conta de aluno/a</h2>
     {% if admin_view %}
     <div class="alert alert-info" role="alert">
         You are viewing this page as Administrator.
@@ -13,11 +13,11 @@
     <p>Viewing Student Page: <strong>{{ student.username }}</strong></p> {# Added student username display for admin
     view #}
     {% else %}
-    <p>Welcome, Student {{ current_user.username }}!</p> {# Original welcome message for student #}
+    <p>Bem vindo/a, Aluno/a {{ current_user.username }}!</p> {# Original welcome message for student #}
     {% endif %}
 
 
-    <h3>Your Grades</h3>
+    <h3>Notas</h3>
     <ul class="list-group">
         {% if admin_view %}
         {% for grade in student.grades %}
@@ -38,7 +38,7 @@
         {% endif %}
     </ul>
 
-    <h3>Teacher Comments</h3>
+    <h3>Comentarios dos Professores</h3>
     <ul class="list-group">
         {% for comment in teacher_comments %}
         <li class="list-group-item">
@@ -48,7 +48,7 @@
             {{ comment.content }}
         </li>
         {% else %}
-        <li class="list-group-item">No comments yet.</li>
+        <li class="list-group-item">Ainda não há comentários.</li>
         {% endfor %}
     </ul>
 </div>
