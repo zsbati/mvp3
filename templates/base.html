@@ -18,7 +18,7 @@
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
 </head>
-<body style="background-image: url('{{ url_for('static', filename='img/background.jpg') }}');
+<body style="background-image: url('{{ url_for('static', filename='img/background.jpg') | safe }}');
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;"
