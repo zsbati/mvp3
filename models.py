@@ -1,12 +1,10 @@
 # models.py
 from datetime import datetime
-
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 
-db = SQLAlchemy()
+from extensions import db  # Import db from extensions
 
 
 class UserType(enum.Enum):

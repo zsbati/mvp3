@@ -4,24 +4,25 @@ import logging
 from functools import wraps
 from datetime import datetime, timedelta
 from flask import Flask, render_template, redirect, url_for, flash, request, session, abort, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.middleware.proxy_fix import ProxyFix
-from enum import Enum
 from dotenv import load_dotenv
 from sqlalchemy import event, text
 from sqlalchemy.engine import Engine
 from logging.handlers import RotatingFileHandler
+
+# Import extensions
+from extensions import db, login_manager
+
+# Import models
+from models import User, UserType, Comment, TeacherStudent, Grade
 
 # Import configuration
 try:
     from config_prod import ProductionConfig as Config
 except ImportError:
     from config import Config
-
-db = SQLAlchemy()
-login_manager = LoginManager()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -79,9 +80,7 @@ with app.app_context():
 
     db.create_all()
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
+# login_manager is already initialized above
 
 
 @login_manager.user_loader
